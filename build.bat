@@ -16,7 +16,11 @@ javac -classpath %classpath% -d build src/*.java
 echo Compiled java files
 
 @REM create manifest file if it doesn't exist
-if not exist manifest.txt echo Main-Class: Main > manifest.txt
+if not exist manifest.txt (
+    echo Main-Class: src.Main > manifest.txt
+    echo Class-Path: lib/*/lib/* >> manifest.txt
+    echo Created manifest file
+)
 
 @REM create the jar file
 jar cfm out.jar manifest.txt -C build .
