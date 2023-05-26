@@ -16,7 +16,7 @@ public class Main extends Application {
 
     private static int width = 800;
     private static int height = 600;
-    private static MDLSystem system;
+    public static MDLSystem system;
     private static MDLCanvas canvas;
 
     @Override

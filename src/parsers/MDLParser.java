@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,8 +16,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import src.models.MDLBlock;
+import src.models.MDLLine;
 import src.models.MDLNode;
 import src.models.MDLSystem;
+import src.models.MDLLine.MDLBranch;
 
 public class MDLParser {
     private final File file;
@@ -105,24 +108,43 @@ public class MDLParser {
     private MDLBlock parseBlock(Node block) {
         String name = block.getAttributes().getNamedItem("Name").getNodeValue();
         String type = block.getAttributes().getNamedItem("BlockType").getNodeValue();
+        String id = block.getAttributes().getNamedItem("SID").getNodeValue();
         Map<String, String> parameters = parseParameters(block);
-        return new MDLBlock(name, type, parameters);
+        return new MDLBlock(name, type, parameters, Integer.parseInt(id));
+    }
+
+    private MDLLine parseLine(Node line) {
+        Map<String, String> parameters = parseParameters(line);
+        Vector<MDLBranch> branches = new Vector<MDLBranch>();
+        NodeList children = line.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if ("Branch".equals(child.getNodeName())) {
+                Map<String, String> branchParameters = parseParameters(child);
+                branches.add(new MDLBranch(branchParameters));
+            }
+        }
+        return new MDLLine(parameters, branches.toArray(new MDLBranch[branches.size()]));
     }
 
     private MDLSystem parseSystem(Node system) {
         NodeList childNodes = system.getChildNodes();
-        int blockCount = 0;
+        int childCount = 0;
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
-            if ("Block".equals(child.getNodeName())) {
-                blockCount++;
+            if ("Block".equals(child.getNodeName()) || "Line".equals(child.getNodeName())) {
+                childCount++;
             }
         }
-        MDLNode[] children = new MDLNode[blockCount];
+        MDLNode[] children = new MDLNode[childCount];
         int blockIndex = 0;
         for (int i = 0; i < childNodes.getLength(); i++) {
             if ("Block".equals(childNodes.item(i).getNodeName())) {
                 children[blockIndex] = parseBlock(childNodes.item(i));
+                blockIndex++;
+            }
+            if ("Line".equals(childNodes.item(i).getNodeName())) {
+                children[blockIndex] = parseLine(childNodes.item(i));
                 blockIndex++;
             }
         }

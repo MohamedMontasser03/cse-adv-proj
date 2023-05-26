@@ -3,6 +3,8 @@ package src.renderers;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import src.models.MDLBlock;
+import src.models.MDLLine;
+import src.models.MDLNode;
 import src.models.MDLSystem;
 import src.utils.StringParsers;
 
@@ -29,22 +31,32 @@ public class MDLCanvas extends Canvas {
         this.height = height;
         final int[] location = StringParsers.parseIntArray(this.system.getParameter("Location"));
         zoomFactor = Double.parseDouble(this.system.getParameter("ZoomFactor")) / 100;
-        // zoomFactor = 1;
+
         widthMultiplier = (double) width / (location[2] - location[0]) * zoomFactor;
         heightMultiplier = (double) height / (location[3] - location[1]) * zoomFactor;
         registerPanningHandelers();
-        // zoom to the center of the system
+        // zoom to the center of the system TODO
         offsetX = -width / 0.7;
         offsetY = -height / 2;
         render();
     }
 
     public void render() {
-        MDLBlock[] blocks = system.getBlocks();
+        // TODO: render by z-index
+        MDLNode[] nodes = system.getChildren();
 
-        for (MDLBlock block : blocks) {
-            MDLBlockRenderer renderer = new MDLBlockRenderer(block);
-            renderer.render(gc, widthMultiplier, heightMultiplier, offsetX, offsetY, zoomFactor);
+        for (MDLNode node : nodes) {
+            if (node instanceof MDLBlock) {
+                MDLBlockRenderer renderer = new MDLBlockRenderer((MDLBlock) node);
+                renderer.render(gc, widthMultiplier, heightMultiplier, offsetX, offsetY,
+                        zoomFactor);
+            }
+            if (node instanceof MDLLine) {
+                MDLLine line = (MDLLine) node;
+                MDLLineRenderer renderer = new MDLLineRenderer(line);
+                renderer.render(gc, widthMultiplier, heightMultiplier, offsetX, offsetY,
+                        zoomFactor);
+            }
         }
     }
 
