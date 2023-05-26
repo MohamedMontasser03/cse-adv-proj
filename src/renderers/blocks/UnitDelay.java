@@ -5,9 +5,9 @@ import src.models.MDLBlock;
 import src.renderers.MDLBlockRenderer;
 import src.renderers.MDLRenderer;
 
-public class Constant extends MDLRenderer {
+public class UnitDelay extends MDLRenderer {
 
-    public Constant(MDLBlock node) {
+    public UnitDelay(MDLBlock node) {
         super(node);
     }
 
@@ -18,8 +18,8 @@ public class Constant extends MDLRenderer {
         int[] dimensions = MDLBlockRenderer.getDimensions(block, widthMultiplier, offsetX, offsetY, heightMultiplier,
                 zoomFactor);
         // get the dimensions of the text to center it
-        renderCenteredText(gc, "1", dimensions[0] + dimensions[2] / 2, dimensions[1] + dimensions[3] / 2,
-                gc.getFont().getSize() * zoomFactor);
+        renderCenteredText(gc, "1/z", dimensions[0] + dimensions[2] / 2, dimensions[1] + dimensions[3] / 2,
+                gc.getFont().getSize() * zoomFactor / 2);
     }
 
 }
