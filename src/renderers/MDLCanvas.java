@@ -67,4 +67,21 @@ public class MDLCanvas extends Canvas {
             render();
         });
     }
+
+    @Override
+    public void resize(double width, double height) {
+        // counter the offset caused by the resize
+        offsetX -= (width - this.width) * 2;
+        offsetY -= (height - this.height);
+
+        this.width = width;
+        this.height = height;
+        setWidth(width);
+        setHeight(height);
+        gc.clearRect(0, 0, width, height);
+        final int[] location = StringParsers.parseIntArray(this.system.getParameter("Location"));
+        widthMultiplier = (double) width / (location[2] - location[0]) * zoomFactor;
+        heightMultiplier = (double) height / (location[3] - location[1]) * zoomFactor;
+        render();
+    }
 }

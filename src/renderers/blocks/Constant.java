@@ -1,8 +1,6 @@
 package src.renderers.blocks;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import src.models.MDLBlock;
 import src.renderers.MDLRenderer;
 import src.utils.StringParsers;
@@ -22,15 +20,8 @@ public class Constant extends MDLRenderer {
                 (int) (positions[1] * heightMultiplier + offsetY),
                 (int) (dimensions[0] * widthMultiplier), (int) (dimensions[1] * heightMultiplier) };
         // get the dimensions of the text to center it
-        Text text = new Text("1");
-        text.setFont(new Font(8 * zoomFactor));
-        final double width = text.getLayoutBounds().getWidth();
-        final double height = text.getLayoutBounds().getHeight();
-        Font originalFont = gc.getFont();
-
-        gc.setFont(new Font(8 * zoomFactor));
-        gc.fillText("1", location2[0] + location2[2] / 2 - width / 2, location2[1] + location2[3] / 2 + height / 4);
-        gc.setFont(originalFont);
+        renderCenteredText(gc, "1", location2[0] + location2[2] / 2, location2[1] + location2[3] / 2,
+                gc.getFont().getSize() * zoomFactor);
     }
 
 }

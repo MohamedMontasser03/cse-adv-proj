@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.text.Text;
 import src.models.MDLBlock;
 import src.renderers.blocks.Constant;
 import src.utils.StringParsers;
@@ -29,13 +28,8 @@ public class MDLBlockRenderer extends MDLRenderer {
                 (int) (positions[1] * heightMultiplier + offsetY),
                 (int) (dimensions[0] * widthMultiplier), (int) (dimensions[1] * heightMultiplier) };
         gc.strokeRect(location2[0], location2[1], location2[2], location2[3]);
-        // render name below block
-        Text text = new Text(block.getName());
-        text.setFont(gc.getFont());
-        final double width = text.getLayoutBounds().getWidth();
-        final double height = text.getLayoutBounds().getHeight();
-        gc.fillText(block.getName(), location2[0] + location2[2] / 2 - width / 2,
-                location2[1] + location2[3] + height);
+        renderCenteredText(gc, block.getName(), location2[0] + location2[2] / 2,
+                location2[1] + location2[3] + zoomFactor * 4, zoomFactor * 4);
         try {
             Class<? extends MDLRenderer> renderer = renderers.get(block.getBlockType());
             renderer.getConstructor(MDLBlock.class).newInstance(block).render(gc, widthMultiplier,
