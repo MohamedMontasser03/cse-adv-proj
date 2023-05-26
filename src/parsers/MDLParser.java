@@ -94,7 +94,7 @@ public class MDLParser {
             Node child = children.item(i);
             if ("P".equals(child.getNodeName())) {
                 String name = child.getAttributes().getNamedItem("Name").getNodeValue();
-                String value = child.getNodeValue();
+                String value = child.getTextContent();
                 parameters.put(name, value);
             }
         }

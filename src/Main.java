@@ -1,14 +1,22 @@
 package src;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import src.models.MDLSystem;
 import src.parsers.MDLParser;
+import src.renderers.MDLCanvas;
 
 public class Main extends Application {
     final static String VERSION = "0.0.1";
     final static String TITLE = "Simulink Viewer";
     final static String ICON = "file:.\\res\\favicon.png";
+
+    private static int width = 800;
+    private static int height = 600;
+    private static MDLSystem system;
 
     @Override
     public void start(Stage stage) {
@@ -20,6 +28,12 @@ public class Main extends Application {
             System.out.println("Error: Failed to load icon");
         }
 
+        Pane root = new Pane();
+        final MDLCanvas canvas = new MDLCanvas(system, width, height);
+
+        root.getChildren().add(canvas);
+        final Scene scene = new Scene(root, width, height);
+        stage.setScene(scene);
         stage.show();
     }
 
@@ -31,7 +45,7 @@ public class Main extends Application {
 
         try {
             MDLParser parser = new MDLParser(args[0]);
-            System.out.println(parser.getSystem());
+            system = parser.getSystem();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.exit(1);
